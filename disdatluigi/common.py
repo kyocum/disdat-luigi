@@ -19,7 +19,6 @@ import logging
 import os
 import sys
 import shutil
-import importlib
 import subprocess
 
 import luigi
@@ -103,10 +102,8 @@ class DisdatLuigiConfig(object):
             config_dir = os.path.expanduser(SYSTEM_CONFIG_DIR)
 
         if not os.path.exists(config_dir):
-            error(
-                'Did not find Disdat-Luigi configuration. '
-                'Call "dsdt luigi init" to initialize Disdat-Luigi.'
-            )
+            # Create a config directory and place default disdatluigi.cfg and luigi.cfg there
+            DisdatLuigiConfig.init()
 
         # Extract individual configuration files
         disdat_cfg = os.path.join(config_dir, CFG_FILE)
@@ -138,10 +135,8 @@ class DisdatLuigiConfig(object):
         Paths in the config might be relative.  If so, add the prefix to them.
         See if there is a disdatluigi.cfg in cwd.  Then configure disdat and (re)configure logging.
         """
-        # _logger.debug("Loading config file [{}]".format(disdat_config_file))
-        config = configparser.ConfigParser({'ignore_code_version': 'False'})
+        config = configparser.ConfigParser()
         config.read(disdat_config_file)
-        self.ignore_code_version = config.getboolean('core', 'ignore_code_version')
 
         # Set up luigi configuration
         luigi.configuration.get_config().read(luigi_config_file)
@@ -443,24 +438,3 @@ def setup_exists(fqp_setup):
         print ("No setup.py found at {}.".format(fqp_setup))
         return False
     return True
-
-
-def load_class(class_path):
-    """
-    Given a fully-qualified [pkg.mod.sub.classname] class name,
-    load the specified class and return a reference to it.
-
-    Args:
-        class_path (str): '.' separated module and classname
-
-    Returns:
-        class: reference to the loaded class
-    """
-    try:
-        mod_path, cls_name = class_path.rsplit('.', 1)
-    except ValueError:
-        raise ValueError('must include fully specified classpath, not local reference')
-
-    mod = importlib.import_module(mod_path)
-    cls = getattr(mod, cls_name)
-    return cls

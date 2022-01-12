@@ -20,7 +20,7 @@ import shutil
 
 import docker
 import disdat.utility.aws_s3 as aws
-from disdat.utility.bundle_helpers import determine_pipe_version
+from disdat.fs import determine_pipe_version
 
 import disdatluigi.resources
 from disdatluigi.infrastructure import dockerizer

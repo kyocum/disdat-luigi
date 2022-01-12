@@ -22,7 +22,8 @@ import pytest
 
 from tests.functional.common import run_test, TEST_CONTEXT
 from tests.functional.common_tasks import COMMON_DEFAULT_ARGS
-import disdat.api as api
+import disdat.api as disdat_api
+import disdatluigi.api as api
 
 
 TEST_NAME    = 'test_bundle'
@@ -62,10 +63,10 @@ def test_run_local_container(run_test, build_container_setup_only):
                      PIPELINE_CLS
                      )
 
-    b_b = api.get(TEST_CONTEXT, 'B')
+    b_b = disdat_api.get(TEST_CONTEXT, 'B')
     assert b_b is not None
 
-    b_a = api.get(TEST_CONTEXT, 'A')
+    b_a = disdat_api.get(TEST_CONTEXT, 'A')
     assert b_a is not None
     assert b_a.data == sum(COMMON_DEFAULT_ARGS)
 
@@ -78,11 +79,11 @@ def test_run_local_container(run_test, build_container_setup_only):
                      force_all=True
                      )
 
-    b_b_f = api.get(TEST_CONTEXT, 'B')
+    b_b_f = disdat_api.get(TEST_CONTEXT, 'B')
     assert b_b_f is not None
     assert b_b.uuid != b_b_f.uuid
 
-    b_a_f = api.get(TEST_CONTEXT, 'A')
+    b_a_f = disdat_api.get(TEST_CONTEXT, 'A')
     assert b_a_f is not None
     assert b_a.uuid != b_a_f.uuid
     assert b_a_f.data == sum([1, 2, 3])
@@ -96,11 +97,11 @@ def test_run_local_container(run_test, build_container_setup_only):
                      force=True
                      )
 
-    b_b_f2 = api.get(TEST_CONTEXT, 'B')
+    b_b_f2 = disdat_api.get(TEST_CONTEXT, 'B')
     assert b_b_f2 is not None
     assert b_b_f.uuid == b_b_f2.uuid
 
-    b_a_f2 = api.get(TEST_CONTEXT, 'A')
+    b_a_f2 = disdat_api.get(TEST_CONTEXT, 'A')
     assert b_a_f2 is not None
     assert b_a_f.uuid != b_a_f2.uuid
 
@@ -117,7 +118,7 @@ def manual_test_run_aws_batch(run_test, build_container_setup_only):
 
     # Add a remote.   Pull and Push!
     manual_s3_url = 's3://'
-    api.remote(TEST_CONTEXT, TEST_CONTEXT, manual_s3_url)
+    disdat_api.remote(TEST_CONTEXT, TEST_CONTEXT, manual_s3_url)
 
     retval = api.run(SETUP_DIR,
                      TEST_CONTEXT,
@@ -129,9 +130,9 @@ def manual_test_run_aws_batch(run_test, build_container_setup_only):
                      )
 
     # Blow away everything and pull
-    api.rm(TEST_CONTEXT, bundle_name='.*', rm_all=True)
-    api.pull(TEST_CONTEXT)
-    b = api.get(TEST_CONTEXT, 'A')
+    disdat_api.rm(TEST_CONTEXT, bundle_name='.*', rm_all=True)
+    disdat_api.pull(TEST_CONTEXT)
+    b = disdat_api.get(TEST_CONTEXT, 'A')
     assert b.data == sum(COMMON_DEFAULT_ARGS)
 
 

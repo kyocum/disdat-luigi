@@ -12,17 +12,20 @@
 # limitations under the License.
 #
 
+import pytest
+
 from disdatluigi.pipe import PipeTask
 from disdatluigi.common import ApplyError
-import disdat.api as api
+import disdat.api as disdat_api
+import disdatluigi.api as api
 import luigi
 
-from tests.functional.common import TEST_CONTEXT
+from tests.functional.common import TEST_CONTEXT, run_test
 
 TEST_NAME    = 'test_bundle'
 
 
-def test():
+def test(run_test):
     """ Purpose of this test is to have one task that produces a bundle.
     And another task that requires it.
 
@@ -35,9 +38,6 @@ def test():
     3.) Try to run Root -- it should find DataMaker but not re-create it or PreMaker_auf_datamaker
 
     """
-
-    api.context(TEST_CONTEXT)
-
     result = None
     try:
         result = api.apply(TEST_CONTEXT, Root, output_bundle='test_api_exit', params={}, force=True, workers=2)
@@ -86,6 +86,7 @@ class Root(PipeTask):
 
 
 if __name__ == "__main__":
-    import multiprocessing as mp
-    mp.set_start_method('fork')
-    test()
+    pytest.main([__file__])
+    #import multiprocessing as mp
+    #mp.set_start_method('fork')
+    #test()

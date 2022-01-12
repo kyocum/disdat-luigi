@@ -21,11 +21,11 @@ $(error DISDAT_ROOT variable not set or invalid)
 endif
 
 # The current Disdat source distribution path
-DISDAT_SDIST := $(shell basename `find $(DISDAT_ROOT)/disdat/infrastructure/dockerizer/context.template/*.tar.gz -type f`)
+DISDAT_SDIST := $(shell basename `find $(DISDAT_ROOT)/disdatluigi/infrastructure/dockerizer/context.template/*.tar.gz -type f`)
 
 # The root of an extra user configuration files (O/S package dependencies,
 # etc.)
-CONFIG_ROOT ?= $(DISDAT_ROOT)/disdat/infrastructure/dockerizer/config
+CONFIG_ROOT ?= $(DISDAT_ROOT)/disdatluigi/infrastructure/dockerizer/config
 CONFIG_ROOT := $(shell echo $(CONFIG_ROOT) | sed 's/\/*$$//')
 ifeq ($(CONFIG_ROOT), )
 $(error CONFIG_ROOT variable not set or invalid)
@@ -33,7 +33,7 @@ endif
 
 # The root of the Docker context template (Dockerfiles, kickstart scripts,
 # etc.)
-DISDAT_DOCKER_CONTEXT_TEMPLATE ?= $(DISDAT_ROOT)/disdat/infrastructure/dockerizer/context.template
+DISDAT_DOCKER_CONTEXT_TEMPLATE ?= $(DISDAT_ROOT)/disdatluigi/infrastructure/dockerizer/context.template
 DISDAT_DOCKER_CONTEXT_TEMPLATE := $(shell echo $(DISDAT_DOCKER_CONTEXT_TEMPLATE) | sed 's/\/*$$//')
 ifeq ($(DISDAT_DOCKER_CONTEXT_TEMPLATE), )
 $(error DISDAT_DOCKER_CONTEXT_TEMPLATE variable not set or invalid)
@@ -122,7 +122,7 @@ build-00: $(DISDAT_DOCKER_CONTEXT)
 		--tag $(IMAGE_00_LAYER) \
 		$(DISDAT_DOCKER_CONTEXT)
 
-build-01: $(DISDAT_DOCKER_CONTEXT) $(DISDAT_DOCKER_CONTEXT)/disdat
+build-01: $(DISDAT_DOCKER_CONTEXT) $(DISDAT_DOCKER_CONTEXT)/disdatluigi
 	@echo "---------- Building Disdat and its Python package dependencies"
 	docker build \
 		--build-arg IMAGE_LAYER=$(IMAGE_00_LAYER) \
@@ -176,10 +176,10 @@ $(DISDAT_DOCKER_CONTEXT)/config: $(DISDAT_DOCKER_CONTEXT) $(shell find $(CONFIG_
 	@touch $@
 
 # Copy Disdat into the Docker context
-$(DISDAT_DOCKER_CONTEXT)/disdat: $(DISDAT_DOCKER_CONTEXT) $(shell find $(DISDAT_ROOT)/disdat -type f)
-	@echo "----- Copying Disdat files from $(DISDAT_ROOT)"
+$(DISDAT_DOCKER_CONTEXT)/disdatluigi: $(DISDAT_DOCKER_CONTEXT) $(shell find $(DISDAT_ROOT)/disdatluigi/infrastructure -type f)
+	@echo "----- Copying Disdat-Luigi files from $(DISDAT_ROOT)"
 	rsync -av --delete --force --quiet \
-		$(DISDAT_ROOT)/disdat/infrastructure/dockerizer $(DISDAT_ROOT)/disdat/infrastructure $@
+		$(DISDAT_ROOT)/disdatluigi/infrastructure/dockerizer $@
 	@touch $@
 
 # Copy the user pipeline package into the Docker context.
@@ -188,10 +188,10 @@ $(DISDAT_DOCKER_CONTEXT)/pipeline: $(DISDAT_DOCKER_CONTEXT) $(shell find $(PIPEL
 	@echo "----- Copying pipeline $(PIPELINE_ROOT)"
 	cd $(PIPELINE_ROOT); \
 	    mkdir $@; \
-	    mkdir disdat-temp.egg-base; \
-	    python setup.py egg_info --egg-base disdat-temp.egg-base; \
-	    cp `ls disdat-temp.egg-base/*.egg-info/requires.txt` $@/user_package_egg_requires.txt; \
-	    rm -rf disdat-temp.egg-base; \
+	    mkdir disdat-luigi-temp.egg-base; \
+	    python setup.py egg_info --egg-base disdat-luigi-temp.egg-base; \
+	    cp `ls disdat-luigi-temp.egg-base/*.egg-info/requires.txt` $@/user_package_egg_requires.txt; \
+	    rm -rf disdat-luigi-temp.egg-base; \
 	    python setup.py sdist --dist-dir $@; \
 	    cd -
 	@touch $@

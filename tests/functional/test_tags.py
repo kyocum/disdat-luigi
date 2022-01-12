@@ -16,6 +16,7 @@ import uuid
 import pytest
 
 from disdat import api
+import disdatluigi.api as dlapi
 from disdatluigi.pipe import PipeTask
 from disdatluigi import common
 
@@ -67,7 +68,7 @@ def context():
 class TestContext:
 
     def test_tags(self, context):
-        api.apply(context, Destination)
+        dlapi.apply(context, Destination)
 
 
 if __name__ == '__main__':

@@ -17,6 +17,7 @@ import pytest
 
 from disdatluigi.pipe import PipeTask
 import disdat.api as api
+import disdatluigi.api as dlapi
 from disdatluigi.common import ApplyError
 from tests.functional.common import run_test, TEST_CONTEXT # autouse fixture to setup / tear down context
 
@@ -91,7 +92,7 @@ def create_bundle_from_pipeline():
     """ Run the internal pipeline, create a bundle, return the uuid
     """
 
-    api.apply(TEST_CONTEXT,
+    dlapi.apply(TEST_CONTEXT,
               ExternalPipeline,
               params={'test_param': EXT_TASK_PARAM_VAL},
               output_bundle=EXT_BUNDLE_NAME)
@@ -103,9 +104,9 @@ def test_ord_external_dependency(run_test):
 
     uuid = create_bundle_from_pipeline()
 
-    api.apply(TEST_CONTEXT, PipelineA)
+    dlapi.apply(TEST_CONTEXT, PipelineA)
 
-    result = api.apply(TEST_CONTEXT, PipelineA)
+    result = dlapi.apply(TEST_CONTEXT, PipelineA)
     assert result['success'] is True
     assert result['did_work'] is False
 
@@ -114,9 +115,9 @@ def test_uuid_external_dependency(run_test):
 
     uuid = create_bundle_from_pipeline()
 
-    api.apply(TEST_CONTEXT, PipelineB, params={'ext_uuid': uuid})
+    dlapi.apply(TEST_CONTEXT, PipelineB, params={'ext_uuid': uuid})
 
-    result = api.apply(TEST_CONTEXT, PipelineB, params={'ext_uuid': uuid})
+    result = dlapi.apply(TEST_CONTEXT, PipelineB, params={'ext_uuid': uuid})
     assert result['success'] is True
     assert result['did_work'] is False
 
@@ -125,9 +126,9 @@ def test_name_external_dependency(run_test):
 
     uuid = create_bundle_from_pipeline()
 
-    api.apply(TEST_CONTEXT, PipelineC, params={'ext_name': EXT_BUNDLE_NAME})
+    dlapi.apply(TEST_CONTEXT, PipelineC, params={'ext_name': EXT_BUNDLE_NAME})
 
-    result = api.apply(TEST_CONTEXT, PipelineC, params={'ext_name': EXT_BUNDLE_NAME})
+    result = dlapi.apply(TEST_CONTEXT, PipelineC, params={'ext_name': EXT_BUNDLE_NAME})
     assert result['success'] is True
     assert result['did_work'] is False
 
@@ -148,7 +149,7 @@ def test_ord_external_dependency_fail(run_test):
     uuid = create_bundle_from_pipeline()
 
     try:
-        result = api.apply(TEST_CONTEXT, PipelineA, params={'test_param': 'never run before'})
+        result = dlapi.apply(TEST_CONTEXT, PipelineA, params={'test_param': 'never run before'})
     except ApplyError as ae:
         print("ERROR: {}".format(ae))
         return
@@ -169,7 +170,7 @@ def test_uuid_external_dependency_fail(run_test):
 
     uuid = create_bundle_from_pipeline()
     try:
-        result = api.apply(TEST_CONTEXT, PipelineB, params={'ext_uuid': 'not a valid uuid'})
+        result = dlapi.apply(TEST_CONTEXT, PipelineB, params={'ext_uuid': 'not a valid uuid'})
     except ApplyError as ae:
         print("ERROR: {}".format(ae))
         return
@@ -190,11 +191,11 @@ def test_name_external_dependency_fail(run_test):
 
     uuid = create_bundle_from_pipeline()
     try:
-        result = api.apply(TEST_CONTEXT, PipelineC, params={'ext_name': 'not a bundle name'})
+        result = dlapi.apply(TEST_CONTEXT, PipelineC, params={'ext_name': 'not a bundle name'})
     except ApplyError as ae:
         print("ERROR: {}".format(ae))
         return
 
 
 if __name__ == '__main__':
-    pytest.main([__file__+"::test_ord_external_dependency_fail"])
+    pytest.main([__file__]) # +"::test_ord_external_dependency_fail"])

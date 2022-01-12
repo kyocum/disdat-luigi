@@ -16,6 +16,7 @@ import luigi
 
 from disdatluigi.pipe import PipeTask
 import disdat.api as api
+import disdatluigi.api as dlapi
 from tests.functional.common import run_test, TEST_CONTEXT
 
 
@@ -99,7 +100,7 @@ class RootYieldList(Root):
 
 def _yield_pipeline(count, workers, roottask, static_deps=False, static_dynamic=False):
     assert len(api.search(TEST_CONTEXT)) == 0, 'Context should be empty'
-    api.apply(TEST_CONTEXT, roottask, output_bundle="test_root", params={'n': count,
+    dlapi.apply(TEST_CONTEXT, roottask, output_bundle="test_root", params={'n': count,
                                                                          'static_deps': static_deps,
                                                                          'static_dynamic_deps': static_dynamic},
               workers=workers)

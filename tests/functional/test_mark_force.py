@@ -15,6 +15,7 @@
 import luigi
 from disdatluigi.pipe import PipeTask
 import disdat.api as api
+import disdatluigi.api as dlapi
 from tests.functional.common import run_test, TEST_CONTEXT
 
 TEST_NAME    = 'test_bundle'
@@ -27,7 +28,7 @@ def test(run_test):
     """
 
     def run_and_get(name, do_ext=False):
-        api.apply(TEST_CONTEXT, A_2, params={'set_ext_dep': do_ext})
+        dlapi.apply(TEST_CONTEXT, A_2, params={'set_ext_dep': do_ext})
         b = api.get(TEST_CONTEXT, 'B')
         print ("Run {}: b.creation_date {} b.uuid {}".format(name, b.creation_date, b.uuid))
         return b

@@ -12,7 +12,7 @@
 # limitations under the License.
 #
 
-from disdat.pipe import PipeTask
+from disdatluigi.pipe import PipeTask
 import luigi
 
 """ These are simple tasks used for test_api_run """

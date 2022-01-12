@@ -27,6 +27,7 @@ import os
 
 from disdatluigi.pipe import PipeTask
 import disdat.api as api
+import disdatluigi.api as dlapi
 from tests.functional.common import run_test, TEST_CONTEXT
 
 TEST_REMOTE = '__test_remote_context__'
@@ -109,7 +110,7 @@ def test_managed_local():
 
     assert len(api.search(TEST_CONTEXT)) == 0, 'Context should be empty'
 
-    api.apply(TEST_CONTEXT, ManagedLocal)
+    dlapi.apply(TEST_CONTEXT, ManagedLocal)
     assert len(api.search(TEST_CONTEXT)) == 1, 'Only one bundle should be present'
     print(api.cat(TEST_CONTEXT, 'b3'))
 
@@ -123,7 +124,7 @@ def test_non_managed_local():
 
     assert len(api.search(TEST_CONTEXT)) == 0, 'Context should be empty'
 
-    api.apply(TEST_CONTEXT, NonManagedLocal)
+    dlapi.apply(TEST_CONTEXT, NonManagedLocal)
     assert len(api.search(TEST_CONTEXT)) == 1, 'Only one bundle should be present'
     print(api.cat(TEST_CONTEXT, 'b1'))
 
@@ -149,7 +150,7 @@ def test_remote_push_managed_s3():
     api.remote(TEST_CONTEXT, TEST_REMOTE, TEST_BUCKET_URL)
 
     # Apply
-    api.apply(TEST_CONTEXT, ManagedS3, incremental_push=True)
+    dlapi.apply(TEST_CONTEXT, ManagedS3, incremental_push=True)
 
     assert not os.path.exists(api.search(TEST_CONTEXT, human_name='b4')[0].data['file'][0]), \
         'Managed S3 file should not be copied to local'
@@ -185,7 +186,7 @@ def test_remote_push_non_managed_s3():
     api.remote(TEST_CONTEXT, TEST_REMOTE, TEST_BUCKET_URL)
 
     # Apply
-    api.apply(TEST_CONTEXT, NonManagedS3, incremental_push=True)
+    dlapi.apply(TEST_CONTEXT, NonManagedS3, incremental_push=True)
     print(api.cat(TEST_CONTEXT, 'b2'))
 
     # Local context should not contain file if a remote exists.
@@ -222,7 +223,7 @@ def test_remote_no_push_managed_s3():
     api.remote(TEST_CONTEXT, TEST_REMOTE, TEST_BUCKET_URL)
 
     with pytest.raises(Exception) as e:
-        api.apply(TEST_CONTEXT, ManagedS3)
+        dlapi.apply(TEST_CONTEXT, ManagedS3)
 
 
 @moto.mock_s3
@@ -246,7 +247,7 @@ def test_remote_no_push_non_managed_s3():
     api.remote(TEST_CONTEXT, TEST_REMOTE, TEST_BUCKET_URL)
 
     # Apply
-    api.apply(TEST_CONTEXT, NonManagedS3)
+    dlapi.apply(TEST_CONTEXT, NonManagedS3)
     print(api.cat(TEST_CONTEXT, 'b2'))
 
     # Local context should not contain file if a remote exists.
@@ -262,7 +263,7 @@ def test_no_remote_push_managed_s3():
     assert len(api.search(TEST_CONTEXT)) == 0, 'Context should be empty'
 
     with pytest.raises(Exception) as e:
-        api.apply(TEST_CONTEXT, ManagedS3, incremental_push=True)
+        dlapi.apply(TEST_CONTEXT, ManagedS3, incremental_push=True)
 
 
 @moto.mock_s3
@@ -282,7 +283,7 @@ def test_no_remote_push_non_managed_s3():
     objects = s3_client.list_objects(Bucket=TEST_BUCKET_OTHER)
     assert 'Contents' not in objects, 'Bucket should be empty'
 
-    api.apply(TEST_CONTEXT, NonManagedS3, incremental_push=True)
+    dlapi.apply(TEST_CONTEXT, NonManagedS3, incremental_push=True)
     print(api.cat(TEST_CONTEXT, 'b2'))
     assert len(api.search(TEST_CONTEXT)) == 1, 'One bundle should be present'
 
@@ -297,7 +298,7 @@ def test_no_remote_no_push_managed_s3():
     assert len(api.search(TEST_CONTEXT)) == 0, 'Context should be empty'
 
     with pytest.raises(Exception) as e:
-        api.apply(TEST_CONTEXT, ManagedS3)
+        dlapi.apply(TEST_CONTEXT, ManagedS3)
 
 
 @moto.mock_s3
@@ -318,7 +319,7 @@ def test_no_remote_no_push_non_managed_s3():
     assert 'Contents' not in objects, 'Bucket should be empty'
 
     # Apply
-    api.apply(TEST_CONTEXT, NonManagedS3)
+    dlapi.apply(TEST_CONTEXT, NonManagedS3)
     print(api.cat(TEST_CONTEXT, 'b2'))
     assert len(api.search(TEST_CONTEXT)) == 1, 'One bundle should be present'
 
