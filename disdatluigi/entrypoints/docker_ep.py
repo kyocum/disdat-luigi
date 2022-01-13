@@ -1,22 +1,32 @@
 #!/usr/bin/env python
+
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
 """
 Entry point for pipelines run within Docker images.
-
-@author: twong / kyocum
-@copyright: Human Longevity, Inc. 2017
-@license: Apache 2.0
 """
-from __future__ import print_function
-
 import logging
 import os
 import sys
 
 import argparse
-import subprocess
 import disdat.common
+import disdatluigi.common
 import disdat.fs
 import disdat.api
+import disdatluigi.api
 from disdat import log
 
 import boto3
@@ -58,7 +68,7 @@ def _context_and_remote(context_name, remote=None):
         _logger.error("Entrypoint got non standard retval {} from api.context({}) command.".format(retval, context_name))
         return False
 
-    if disdat.common.LOCAL_EXECUTION not in os.environ:
+    if disdatluigi.common.LOCAL_EXECUTION not in os.environ:
         disdat.api.switch(context_name)
     else:
         _logger.info("Container running locally (not in a cloud provider, aka AWS).  Not switching contexts")
@@ -199,7 +209,7 @@ def run_disdat_container(args):
     output_tags = disdat.common.parse_args_tags(args.output_tag)
 
     # Convert string of pipeline args into dictionary for api.apply
-    deser_user_params = disdat.common.parse_params(args.pipe_cls, args.pipeline_args)
+    deser_user_params = disdatluigi.common.parse_params(args.pipe_cls, args.pipeline_args)
 
     # If the user wants final and intermediate, then inc push.
     if not args.no_push and not args.no_push_intermediates:
@@ -208,7 +218,7 @@ def run_disdat_container(args):
         incremental_push = False
 
     try:
-        result = disdat.api.apply(args.branch,
+        result = disdatluigi.api.apply(args.branch,
                                   args.pipe_cls,
                                   output_bundle=args.output_bundle,
                                   input_tags=input_tags,
@@ -242,7 +252,7 @@ def run_disdat_container(args):
         _logger.error('Failed to run pipeline: RuntimeError {}'.format(re))
         sys.exit(os.EX_IOERR)
 
-    except disdat.common.ApplyError as ae:
+    except disdatluigi.common.ApplyError as ae:
         _logger.error('Failed to run pipeline: ApplyException {}'.format(ae))
         sys.exit(os.EX_IOERR)
 
