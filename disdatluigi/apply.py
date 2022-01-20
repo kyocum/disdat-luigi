@@ -23,6 +23,7 @@ from luigi.execution_summary import LuigiStatusCode, _partition_tasks
 
 import disdat.common as common  # config, especially logging, before luigi ever loads
 import disdat.fs as fs
+from disdatluigi.common import apply_handle_result, parse_params
 from disdatluigi import logger as _logger
 
 
@@ -140,6 +141,7 @@ def apply(output_bundle, pipe_params, pipe_cls, input_tags, output_tags, force, 
 # Add a reference count to apply, so we can determine when to clean up the path_cache
 apply.reference_count = 0
 
+
 def create_users_task(pipe_cls,
                       pipe_params,
                       root_bundle_name,
@@ -213,7 +215,7 @@ def cli_apply(args):
         return
 
     # Create a dictionary of str->str arguments to str->python objects deser'd by Luigi Parameters
-    deser_user_params = common.parse_params(args.pipe_cls, args.params)
+    deser_user_params = parse_params(args.pipe_cls, args.params)
 
     input_tags = common.parse_args_tags(args.input_tag)
 
@@ -230,7 +232,7 @@ def cli_apply(args):
                    incremental_pull=args.incremental_pull)
 
     # If we didn't successfully run any task, sys.exit with non-zero code
-    common.apply_handle_result(result)
+    apply_handle_result(result)
 
 
 def add_arg_parser(subparsers):

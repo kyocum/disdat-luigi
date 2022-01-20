@@ -34,11 +34,12 @@ import boto3 as b3
 from enum import Enum
 
 import disdat.fs as fs
-import disdat.common as common
+import disdat.common
 import disdat.utility.aws_s3 as aws
 from disdat.common import DisdatConfig
 from disdat import logger as _logger
 
+import disdatluigi.common
 
 _MODULE_NAME = inspect.getmodulename(__file__)
 
@@ -85,7 +86,7 @@ def _run_local(cli, pipeline_setup_file, arglist, backend):
     if 'AWS_PROFILE' in os.environ:
         environment['AWS_PROFILE'] = os.environ['AWS_PROFILE']
 
-    environment[common.LOCAL_EXECUTION] = 'True'
+    environment[disdatluigi.common.LOCAL_EXECUTION] = 'True'
 
     # Todo: Local runs do not yet set resource limits, but when they do, we'll have to set this
     #environment['DISDAT_CPU_COUNT'] = vcpus
@@ -100,7 +101,7 @@ def _run_local(cli, pipeline_setup_file, arglist, backend):
 
     try:
         if backend == Backend.LocalSageMaker:
-            pipeline_image_name = common.make_sagemaker_project_image_name(pipeline_setup_file)
+            pipeline_image_name = disdatluigi.common.make_sagemaker_project_image_name(pipeline_setup_file)
             tempdir = tempfile.mkdtemp()
             with open(os.path.join(tempdir, 'hyperparameters.json'), 'w') as of:
                 json.dump(_sagemaker_hyperparameters_from_arglist(arglist), of)
@@ -116,7 +117,7 @@ def _run_local(cli, pipeline_setup_file, arglist, backend):
         else:
             # Add the actual command to the arglist (for non-sagemaker runs)
             arglist = [ENTRYPOINT_BIN] + arglist
-            pipeline_image_name = common.make_project_image_name(pipeline_setup_file)
+            pipeline_image_name = disdatluigi.common.make_project_image_name(pipeline_setup_file)
 
         _logger.debug('Running image {} with arguments {}'.format(pipeline_image_name, arglist))
 
@@ -151,9 +152,9 @@ def get_fq_docker_repo_name(is_sagemaker, pipeline_setup_file):
     if disdat_config.parser.has_option('docker', 'repository_prefix'):
         repository_prefix = disdat_config.parser.get('docker', 'repository_prefix')
     if is_sagemaker:
-        repository_name = common.make_sagemaker_project_repository_name(repository_prefix, pipeline_setup_file)
+        repository_name = disdatluigi.common.make_sagemaker_project_repository_name(repository_prefix, pipeline_setup_file)
     else:
-        repository_name = common.make_project_repository_name(repository_prefix, pipeline_setup_file)
+        repository_name = disdatluigi.common.make_project_repository_name(repository_prefix, pipeline_setup_file)
 
     # Figure out the fully-qualified repository name, i.e., the name
     # including the registry.
@@ -468,7 +469,7 @@ def _run(
     pfs = fs.DisdatFS()
     pipeline_setup_file = os.path.join(pipeline_root, 'setup.py')
 
-    if not common.setup_exists(pipeline_setup_file):
+    if not disdatluigi.common.setup_exists(pipeline_setup_file):
         return assert_or_log(cli, "Disdat run: Unable to find setup.py file [{}].".format(pipeline_setup_file))
 
     # When run in a container, we create the uuid externally to look for a specific result
@@ -478,18 +479,18 @@ def _run(
     if context is None:
         if not pfs.in_context():
             return assert_or_log(cli, "Disdat run: Not running in a local context. Switch or specify.")
-        remote, context = common.get_run_command_parameters(pfs)
+        remote, context = disdatluigi.common.get_run_command_parameters(pfs)
 
     if remote is None and (not no_push or not no_pull):  # if pulling or pushing, need a remote
         return assert_or_log(cli, "Pushing or pulling bundles with 'run' requires a remote.")
 
-    arglist = common.make_run_command(output_bundle, output_bundle_uuid, pipe_cls, remote, context,
+    arglist = disdatluigi.common.make_run_command(output_bundle, output_bundle_uuid, pipe_cls, remote, context,
                                       input_tags, output_tags, force, force_all, no_pull, no_push,
                                       no_push_int, workers, pipeline_args)
 
     if backend == Backend.AWSBatch or backend == Backend.SageMaker:
 
-        pipeline_image_name = common.make_project_image_name(pipeline_setup_file)
+        pipeline_image_name = disdatluigi.common.make_project_image_name(pipeline_setup_file)
 
         job_name = '{}-{}'.format(pipeline_image_name, int(time.time()))
 
@@ -657,8 +658,8 @@ def run_entry(cli=False, **kwargs):
     for k in remove_keys:
         kwargs.pop(k)
 
-    kwargs['input_tags'] = common.parse_args_tags(kwargs['input_tags'], to='list')
-    kwargs['output_tags'] = common.parse_args_tags(kwargs['output_tags'], to='list')
+    kwargs['input_tags'] = disdat.common.parse_args_tags(kwargs['input_tags'], to='list')
+    kwargs['output_tags'] = disdat.common.parse_args_tags(kwargs['output_tags'], to='list')
     kwargs['cli'] = cli
 
     return _run(**kwargs)

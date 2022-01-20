@@ -16,13 +16,13 @@ ENV BUILD_ROOT $BUILD_ROOT
 ARG DISDAT_SDIST
 
 # Copy the Disdat source to the temporary build root
-COPY disdat $BUILD_ROOT/disdat
+COPY disdatluigi $BUILD_ROOT/disdatluigi
 
 # Create our virtual env
 RUN virtualenv $VIRTUAL_ENV
 
 # ...and install Disdat
-RUN ["/bin/bash", "-c", "source $VIRTUAL_ENV/bin/activate; pip install $BUILD_ROOT/disdat/dockerizer/context.template/$DISDAT_SDIST; deactivate"]
+RUN ["/bin/bash", "-c", "source $VIRTUAL_ENV/bin/activate; pip install $BUILD_ROOT/disdatluigi/dockerizer/context.template/$DISDAT_SDIST; deactivate"]
 
 # Add the virtual environment Python to the head of the PATH; running
 # `python` will then get you the installed virtual environment and the

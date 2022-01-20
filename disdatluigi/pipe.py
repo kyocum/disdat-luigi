@@ -36,14 +36,14 @@ from types import GeneratorType
 
 import luigi
 from luigi import worker
-
-from disdat.pipe_base import PipeBase, YIELD_PIPETASK_ARG_NAME, MISSING_EXT_DEP_UUID
-from disdat.common import BUNDLE_TAG_TRANSIENT, BUNDLE_TAG_PUSH_META, ExtDepError
+from disdat.common import BUNDLE_TAG_TRANSIENT, BUNDLE_TAG_PUSH_META
 from disdat.hyperframe import HyperFrameRecord
 from disdat.fs import DisdatFS
 from disdat.utility.bundle_helpers import different_code_versions
 import disdat.api as api
 
+from disdatluigi.pipe_base import PipeBase, YIELD_PIPETASK_ARG_NAME, MISSING_EXT_DEP_UUID
+from disdatluigi.common import ExtDepError
 from disdatluigi import logger as _logger
 
 

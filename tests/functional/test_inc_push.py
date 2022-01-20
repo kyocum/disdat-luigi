@@ -22,9 +22,11 @@ author: Kenneth Yocum
 import boto3
 import luigi
 import moto
+import pytest
 
 from disdatluigi.pipe import PipeTask
 import disdat.api as api
+import disdatluigi.api as dlapi
 from tests.functional.common import TEST_CONTEXT
 
 TEST_REMOTE = '__test_remote_context__'
@@ -41,7 +43,7 @@ class APush(PipeTask):
         target = self.create_output_file('a.txt')
         with target.open('w') as output:
             output.write('Hi!')
-        return {'file': [target]}
+        return {'file': [target.path]}
 
 
 class BPush(PipeTask):
@@ -61,7 +63,7 @@ class BPush(PipeTask):
 
         with target.open('w') as output:
             output.write(str(self.n))
-        return {'file': [target]}
+        return {'file': [target.path]}
 
 
 class CPush(PipeTask):
@@ -97,7 +99,7 @@ def test_add_with_treat_as_bundle():
     # Try to run the pipeline - should fail
     try:
         # Run test pipeline
-        api.apply(TEST_CONTEXT, CPush, incremental_push=True)
+        dlapi.apply(TEST_CONTEXT, CPush, incremental_push=True)
     except Exception as e:
         pass
 
@@ -111,3 +113,7 @@ def test_add_with_treat_as_bundle():
         assert output_file in keys, 'Pipeline should have pushed file'
 
     api.delete_context(TEST_CONTEXT)
+
+
+if __name__ == '__main__':
+    pytest.main([__file__])

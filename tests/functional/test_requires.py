@@ -15,6 +15,7 @@
 import pytest
 from disdatluigi.pipe import PipeTask
 import disdat.api as api
+import disdatluigi.api as dlapi
 from tests.functional.common import run_test, TEST_CONTEXT
 
 
@@ -43,7 +44,7 @@ class b(PipeTask):
 
 
 def test_requires(run_test):
-    api.apply(TEST_CONTEXT, b, params={}, workers=WORKERS)
+    dlapi.apply(TEST_CONTEXT, b, params={}, workers=WORKERS)
 
 
 if __name__ == '__main__':

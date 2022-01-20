@@ -26,6 +26,7 @@ import pytest
 
 from disdatluigi.pipe import PipeTask
 import disdat.api as api
+import disdatluigi.api as dlapi
 from tests.functional.common import TEST_CONTEXT
 
 
@@ -43,7 +44,7 @@ class AIP(PipeTask):
         target = self.create_output_file('a.txt')
         with target.open('w') as output:
             output.write('Hi!')
-        return {'file': [target]}
+        return {'file': [target.path]}
 
 
 class BIP(PipeTask):
@@ -63,7 +64,7 @@ class BIP(PipeTask):
 
         with target.open('w') as output:
             output.write(str(self.n))
-        return {'file': [target]}
+        return {'file': [target.path]}
 
 
 class CIP(PipeTask):
@@ -78,7 +79,7 @@ class CIP(PipeTask):
         target = self.create_output_file('c.txt')
         with target.open('w') as output:
             output.write(str(self.n + 5))
-        return {'file': [target]}
+        return {'file': [target.path]}
 
 
 @moto.mock_s3
@@ -99,12 +100,11 @@ def test_add_with_treat_as_bundle():
     api.remote(TEST_CONTEXT, TEST_REMOTE, TEST_BUCKET_URL)
 
     # Run test pipeline
-    api.apply(TEST_CONTEXT, CIP)
+    dlapi.apply(TEST_CONTEXT, CIP)
 
     # Push bundles to remote
     for bundle_name in ['a', 'b', 'c']:
         assert api.get(TEST_CONTEXT, bundle_name) is not None, 'Bundle should exist'
-
         api.commit(TEST_CONTEXT, bundle_name)
         api.push(TEST_CONTEXT, bundle_name)
 
@@ -129,7 +129,7 @@ def test_add_with_treat_as_bundle():
         assert data_path.startswith('s3://'), 'Data should be in S3'
 
     # Rerun pipeline
-    api.apply(TEST_CONTEXT, BIP, params={'n': 100}, incremental_pull=True)
+    dlapi.apply(TEST_CONTEXT, BIP, params={'n': 100}, incremental_pull=True)
 
     # Make sure all bundles exist. Bundles a and b should have local paths
     for bundle_name in ['a', 'b', 'c']:
@@ -146,4 +146,6 @@ def test_add_with_treat_as_bundle():
 
 
 if __name__ == '__main__':
+    #test_add_with_treat_as_bundle()
+    # if testing outside of tox, remember, moto hates MP_CONTEXT_TYPE==forkserver.  Go with fork.
     pytest.main([__file__])

@@ -15,7 +15,6 @@
 import json
 import warnings
 
-import disdat.fs
 import disdat.common as common
 from disdat.api import _get_context
 
@@ -23,6 +22,7 @@ import disdatluigi.apply
 import disdatluigi.run
 from disdatluigi.run import Backend, run_entry
 from disdatluigi.dockerize import dockerize_entry
+from disdatluigi.common import apply_handle_result
 from disdatluigi import logger as _logger
 
 
@@ -75,7 +75,7 @@ def apply(local_context, transform, output_bundle='-',
     # IF apply raises, let it go up.
     # If API, caller can catch.
     # If CLI, python will exit 1
-    result = disdat.apply.apply(output_bundle, params, transform,
+    result = disdatluigi.apply.apply(output_bundle, params, transform,
                                 input_tags, output_tags, force, force_all,
                                 output_bundle_uuid=output_bundle_uuid,
                                 central_scheduler=central_scheduler,
@@ -87,7 +87,7 @@ def apply(local_context, transform, output_bundle='-',
     # If no raise, but luigi says not successful
     # If API (here), then raise for caller to catch.
     # For CLI, we exit with 1
-    common.apply_handle_result(result, raise_not_exit=True)
+    apply_handle_result(result, raise_not_exit=True)
 
     return result
 

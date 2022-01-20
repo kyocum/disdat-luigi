@@ -16,6 +16,7 @@ import luigi
 
 from disdatluigi.pipe import PipeTask
 import disdat.api as api
+import disdatluigi.api as dlapi
 from tests.functional.common import run_test, TEST_CONTEXT
 
 
@@ -55,7 +56,7 @@ class Root(PipeTask):
 
     def pipe_run(self, a=None, b=None):
         if self.inception:
-            api.apply(TEST_CONTEXT, Root, output_bundle="inception_result", params={'n': 100}, workers=self.workers)
+            dlapi.apply(TEST_CONTEXT, Root, output_bundle="inception_result", params={'n': 100}, workers=self.workers)
             b = api.get(TEST_CONTEXT, "inception_result" )
             return b.data
         else:
@@ -64,7 +65,7 @@ class Root(PipeTask):
 
 def _inception_pipeline(inner_workers, outer_workers):
     assert len(api.search(TEST_CONTEXT)) == 0, 'Context should be empty'
-    api.apply(TEST_CONTEXT, Root, output_bundle="test_root", params={'inception': True,
+    dlapi.apply(TEST_CONTEXT, Root, output_bundle="test_root", params={'inception': True,
                                                                      'workers': inner_workers},
               workers=outer_workers)
 

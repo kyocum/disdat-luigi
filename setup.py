@@ -53,8 +53,7 @@ setup(
 
     # You can just specify the packages manually here if your project is
     # simple. Or you can use find_packages().
-    packages=find_packages(exclude=['tests*',
-                                    'infrastructure.tests*']),
+    packages=find_packages(exclude=['tests*']),
 
     # Include non-python files found in each package in the install, if in your MANIFEST.in
     include_package_data=True,
@@ -91,7 +90,7 @@ setup(
     # If <= means higher versions broke something.
 
     install_requires=[
-        'disdat>0.10',
+        'disdat>=1.0.0',
         'luigi>=3.0,<=3.1',
         'boto3>=1.14.49,<2.0',
         'docker>=4.1.0,<4.4.0',
@@ -119,10 +118,10 @@ setup(
 
     entry_points={
         'console_scripts': [
-            'dsdt_docker = disdat.entrypoints.docker_ep:main'
+            'dsdt_docker = disdatluigi.entrypoints.docker_ep:main'
         ],
         'distutils.commands': [
-            "dsdt_distname = disdat.infrastructure.dockerizer.setup_tools_commands:DistributionName",
+            "dsdt_distname = disdatluigi.infrastructure.dockerizer.setup_tools_commands:DistributionName",
         ]
     },
 )

@@ -12,12 +12,13 @@
 # limitations under the License.
 #
 
+import pytest
 import luigi
 import pandas as pd
 import numpy as np
 from disdatluigi.pipe import PipeTask
 import disdat.api as api
-import pytest
+import disdatluigi.api as dlapi
 
 from tests.functional.common import run_test, TEST_CONTEXT # autouse fixture to setup / tear down context
 
@@ -35,14 +36,14 @@ def test(run_test):
 
     api.context(TEST_CONTEXT)
 
-    api.apply(TEST_CONTEXT, DataMaker, params={'int_array': [1000, 2000, 3000]})
+    dlapi.apply(TEST_CONTEXT, DataMaker, params={'int_array': [1000, 2000, 3000]})
 
     b = api.get(TEST_CONTEXT, 'PreMaker')
     assert(b is not None)
     pm_uuid = b.uuid
     b.rm()
 
-    api.apply(TEST_CONTEXT, Root)
+    dlapi.apply(TEST_CONTEXT, Root)
 
     b = api.get(TEST_CONTEXT, 'PreMaker')
     assert(b is not None)
