@@ -19,8 +19,7 @@ import moto
 import docker
 import pytest
 
-
-from tests.functional.common import run_test, TEST_CONTEXT
+from tests.conftest import TEST_CONTEXT
 from tests.functional.common_tasks import COMMON_DEFAULT_ARGS
 import disdat.api as disdat_api
 import disdatluigi.api as api
@@ -106,7 +105,7 @@ def test_run_local_container(run_test, build_container_setup_only):
     assert b_a_f.uuid != b_a_f2.uuid
 
 
-#@moto.mock_s3
+#@moto.mock_aws
 def manual_test_run_aws_batch(run_test, build_container_setup_only):
     """ Incomplete test.   The container code itself needs to have
     its S3 access mocked out.  Here we are testing manually

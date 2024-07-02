@@ -27,7 +27,7 @@ import pytest
 from disdatluigi.pipe import PipeTask
 import disdat.api as api
 import disdatluigi.api as dlapi
-from tests.functional.common import TEST_CONTEXT
+from tests.conftest import TEST_CONTEXT
 
 TEST_REMOTE = '__test_remote_context__'
 TEST_BUCKET = 'test-bucket'
@@ -79,7 +79,7 @@ class CPush(PipeTask):
         raise Exception
 
 
-@moto.mock_s3
+@moto.mock_aws
 def test_add_with_treat_as_bundle():
     api.delete_context(TEST_CONTEXT)
     api.context(context_name=TEST_CONTEXT)

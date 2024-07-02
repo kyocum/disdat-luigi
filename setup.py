@@ -90,10 +90,10 @@ setup(
     # If <= means higher versions broke something.
 
     install_requires=[
-        'disdat>=1.0.0',
-        'luigi>=3.0,<=3.1',
+        'disdat>=1.1.3,<1.2',
+        'luigi>=3.0,<3.6',
         'boto3>=1.14.49,<2.0',
-        'docker>=4.1.0,<4.4.0',
+        'docker>=7.0.0,<7.2.0',
     ],
 
     # List additional groups of dependencies here (e.g. development
@@ -108,7 +108,8 @@ setup(
             'pylint',
             'coverage',
             'tox',
-            'moto',
+            'moto>=5',
+            'fastparquet',
             's3fs<=0.4.2' # 0.5.0 breaks with aiobotocore and missing AWS headers
         ],
         'rel': [

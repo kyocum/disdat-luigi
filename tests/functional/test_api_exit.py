@@ -16,11 +16,10 @@ import pytest
 
 from disdatluigi.pipe import PipeTask
 from disdatluigi.common import ApplyError
-import disdat.api as disdat_api
 import disdatluigi.api as api
 import luigi
 
-from tests.functional.common import TEST_CONTEXT, run_test
+from tests.conftest import TEST_CONTEXT
 
 TEST_NAME    = 'test_bundle'
 

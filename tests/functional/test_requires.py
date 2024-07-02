@@ -16,7 +16,7 @@ import pytest
 from disdatluigi.pipe import PipeTask
 import disdat.api as api
 import disdatluigi.api as dlapi
-from tests.functional.common import run_test, TEST_CONTEXT
+from tests.conftest import TEST_CONTEXT
 
 
 """ Purpose of this test is to show that if you return nothing, you 
