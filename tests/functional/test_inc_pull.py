@@ -27,7 +27,7 @@ import pytest
 from disdatluigi.pipe import PipeTask
 import disdat.api as api
 import disdatluigi.api as dlapi
-from tests.functional.common import TEST_CONTEXT
+from tests.conftest import TEST_CONTEXT
 
 
 TEST_REMOTE = '__test_remote_context__'
@@ -82,10 +82,14 @@ class CIP(PipeTask):
         return {'file': [target.path]}
 
 
-@moto.mock_s3
+@moto.mock_aws
 def test_add_with_treat_as_bundle():
     api.delete_context(TEST_CONTEXT)
     api.context(context_name=TEST_CONTEXT)
+    
+    import os
+    print(os.environ)
+
 
     # Setup moto s3 resources
     s3_client = boto3.client('s3')

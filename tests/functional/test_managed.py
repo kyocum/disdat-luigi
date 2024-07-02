@@ -21,14 +21,17 @@ author: Sayantan Satpati
 """
 import boto3
 import moto
+from moto import mock_aws
 import pandas as pd
 import pytest
 import os
 
+from tests.conftest import _aws_credentials
+
 from disdatluigi.pipe import PipeTask
 import disdat.api as api
 import disdatluigi.api as dlapi
-from tests.functional.common import run_test, TEST_CONTEXT
+from tests.conftest import TEST_CONTEXT
 
 TEST_REMOTE = '__test_remote_context__'
 TEST_BUCKET = 'test-bucket'
@@ -132,7 +135,7 @@ def test_non_managed_local():
         'Local file should be present in bundle'
 
 
-@moto.mock_s3
+@moto.mock_aws
 def test_remote_push_managed_s3():
     api.delete_context(TEST_CONTEXT)
     api.context(context_name=TEST_CONTEXT)
@@ -165,7 +168,7 @@ def test_remote_push_managed_s3():
         assert output_file in keys, 'Pipeline should have pushed file'
 
 
-@moto.mock_s3
+@moto.mock_aws
 def test_remote_push_non_managed_s3():
     api.delete_context(TEST_CONTEXT)
     api.context(context_name=TEST_CONTEXT)
@@ -205,7 +208,7 @@ def test_remote_push_non_managed_s3():
         assert output_file in keys, 'Pipeline should have pushed file'
 
 
-@moto.mock_s3
+@moto.mock_aws
 def test_remote_no_push_managed_s3():
     api.delete_context(TEST_CONTEXT)
     api.context(context_name=TEST_CONTEXT)
@@ -226,7 +229,7 @@ def test_remote_no_push_managed_s3():
         dlapi.apply(TEST_CONTEXT, ManagedS3)
 
 
-@moto.mock_s3
+@moto.mock_aws
 def test_remote_no_push_non_managed_s3():
     api.delete_context(TEST_CONTEXT)
     api.context(context_name=TEST_CONTEXT)
@@ -266,7 +269,7 @@ def test_no_remote_push_managed_s3():
         dlapi.apply(TEST_CONTEXT, ManagedS3, incremental_push=True)
 
 
-@moto.mock_s3
+@moto.mock_aws
 def test_no_remote_push_non_managed_s3():
     api.delete_context(TEST_CONTEXT)
     api.context(context_name=TEST_CONTEXT)
@@ -301,7 +304,7 @@ def test_no_remote_no_push_managed_s3():
         dlapi.apply(TEST_CONTEXT, ManagedS3)
 
 
-@moto.mock_s3
+@moto.mock_aws
 def test_no_remote_no_push_non_managed_s3():
     api.delete_context(TEST_CONTEXT)
     api.context(context_name=TEST_CONTEXT)
@@ -328,7 +331,6 @@ def test_no_remote_no_push_non_managed_s3():
 
 
 if __name__ == '__main__':
-    #test_remote_push_managed_s3()
     pytest.main([__file__])
 
 

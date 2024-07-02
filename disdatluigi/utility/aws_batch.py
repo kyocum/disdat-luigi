@@ -164,7 +164,7 @@ def ecr_create_fq_respository_name(repository_name, policy_resource_package=None
             )
             repository_metadata = response['repositories'][0]
         elif e.response['Error']['Code'] == 'AccessDeniedException':
-            _logger.warn("Error [AccessDeniedException] when creating repo {}, trying to continue...".format(repository_name))
+            _logger.warning("Error [AccessDeniedException] when creating repo {}, trying to continue...".format(repository_name))
         else:
             raise e
     return repository_metadata['repositoryUri']

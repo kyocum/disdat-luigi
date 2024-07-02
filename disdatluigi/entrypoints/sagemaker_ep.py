@@ -90,7 +90,7 @@ if __name__ == '__main__':
             _logger.error("Disdat SageMaker train entrypoint failed.")
             sys.exit(os.EX_IOERR)
     elif args.purpose == 'serve':
-        _logger.warn("Disdat does not yet support SageMaker serve.")
+        _logger.warning("Disdat does not yet support SageMaker serve.")
         sys.exit(os.EX_UNAVAILABLE)
     else:
         _logger.error("Disdat SageMaker invoked entrypoint with {}, not 'train' or 'serve'".format(args.purpose))

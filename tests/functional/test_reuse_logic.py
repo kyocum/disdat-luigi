@@ -17,7 +17,7 @@ import luigi
 from disdatluigi.pipe import PipeTask
 import disdat.api as api
 import disdatluigi.api as dlapi
-from tests.functional.common import run_test, TEST_CONTEXT, setup
+from tests.conftest import TEST_CONTEXT
 
 """ This set of tests verifies the behavior of Disdat's re-execution / data re-use logic.
  

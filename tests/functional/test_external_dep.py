@@ -19,7 +19,7 @@ from disdatluigi.pipe import PipeTask
 import disdat.api as api
 import disdatluigi.api as dlapi
 from disdatluigi.common import ApplyError
-from tests.functional.common import run_test, TEST_CONTEXT # autouse fixture to setup / tear down context
+from tests.conftest import TEST_CONTEXT
 
 EXT_BUNDLE_NAME='ext_bundle_human_name'
 BUNDLE_CONTENTS=list(range(9))

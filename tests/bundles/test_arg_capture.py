@@ -17,7 +17,7 @@ import luigi
 import disdat.api as dsdt_api
 from disdatluigi.pipe import PipeTask
 import disdatluigi.api as api
-from tests.functional.common import run_test, TEST_CONTEXT
+from tests.conftest import TEST_CONTEXT
 
 test_luigi_args_data = {'str_arg': 'some string',
                     'int_arg': 10,
@@ -39,7 +39,7 @@ class ArgTask(PipeTask):
         return True
 
 
-def test_luigi_args(run_test):
+def test_luigi_args():
     """ Create a task, store args, retrieve from bundle api.
     Pass in python objects as the values for Luigi parameters.
     Stored as serialized json objects.   Bundle presents the parameters
