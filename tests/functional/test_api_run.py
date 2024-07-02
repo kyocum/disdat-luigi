@@ -19,10 +19,6 @@ import moto
 import docker
 import pytest
 
-
-import sys
-print(sys.path)
-
 from tests.conftest import TEST_CONTEXT
 from tests.functional.common_tasks import COMMON_DEFAULT_ARGS
 import disdat.api as disdat_api

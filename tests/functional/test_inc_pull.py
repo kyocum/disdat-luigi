@@ -87,10 +87,6 @@ def test_add_with_treat_as_bundle():
     api.delete_context(TEST_CONTEXT)
     api.context(context_name=TEST_CONTEXT)
     
-    import os
-    print(os.environ)
-
-
     # Setup moto s3 resources
     s3_client = boto3.client('s3')
     s3_resource = boto3.resource('s3')
