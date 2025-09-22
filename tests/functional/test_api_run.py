@@ -38,6 +38,8 @@ def build_container_setup_only():
     """ Create a docker image locally.  At the moment we are only
     testing whether the basic python setup.py builds correctly.
 
+    /build-dist.sh must be run before this fixture will work
+
     TODO: Need to test using the configure directory with
         a.) Using a MANIFEST file
         b.) Installing custom python packages
