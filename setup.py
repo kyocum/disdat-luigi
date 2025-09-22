@@ -93,7 +93,7 @@ setup(
     # If <= means higher versions broke something.
 
     install_requires=[
-        'disdat>=1.1.3,<1.2',
+        'disdat>=1.1.3',
         'luigi>=3.0,<3.6',
         'boto3>=1.14.49,<2.0',
         'docker>=7.0.0,<7.2.0',
