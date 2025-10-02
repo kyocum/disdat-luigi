@@ -45,8 +45,11 @@ setup(
 
         # Specify the Python versions you support here. In particular, ensure
         # that you indicate whether you support Python 2, Python 3 or both.
-        'Programming Language :: Python :: 3.7',
-        'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
+        'Programming Language :: Python :: 3.11',
+        'Programming Language :: Python :: 3.12',
+        'Programming Language :: Python :: 3.13',
         'Operating System :: OS Independent',
         'Natural Language :: English',
     ],
@@ -90,7 +93,7 @@ setup(
     # If <= means higher versions broke something.
 
     install_requires=[
-        'disdat>=1.1.3,<1.2',
+        'disdat>=1.1.3',
         'luigi>=3.0,<3.6',
         'boto3>=1.14.49,<2.0',
         'docker>=7.0.0,<7.2.0',
